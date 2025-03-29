@@ -58,10 +58,10 @@ type Instant struct {
 
 type Details struct {
 	AirTemperature float64 `json:"air_temperature"`
-	AirHumidity    float64 `json:"air_humidity"`
-	AirPressure    float64 `json:"air_pressure"`
+	AirHumidity    float64 `json:"relative_humidity"`
+	AirPressure    float64 `json:"air_pressure_at_sea_level"`
 	WindSpeed      float64 `json:"wind_speed"`
-	WindDirection  float64 `json:"wind_direction"`
+	WindDirection  float64 `json:"wind_from_direction"`
 }
 
 type Next12Hours struct {
@@ -70,22 +70,22 @@ type Next12Hours struct {
 
 type Summary struct {
 	SymbolCode string `json:"symbol_code"`
-	Value      string `json:"value"`
 }
 
 type WeatherData struct {
-	Time           string  `json:"time"`
-	Temperature    float64 `json:"temperature"`
-	WindSpeed      float64 `json:"wind_speed"`
-	WindDirection  float64 `json:"wind_direction"`
-	AirPressure    float64 `json:"air_pressure"`
-	AirHumidity    float64 `json:"air_humidity"`
-	WeatherSummary string  `json:"weather_summary"`
-	SymbolCode     string  `json:"symbol_code"`
+	Time          string  `json:"time"`
+	Temperature   float64 `json:"temperature"`
+	WindSpeed     float64 `json:"wind_speed"`
+	WindDirection float64 `json:"wind_direction"`
+	AirPressure   float64 `json:"air_pressure"`
+	AirHumidity   float64 `json:"air_humidity"`
+	SymbolCode    string  `json:"symbol_code"`
 }
 
-func (a *App) Log(result string) {
-	fmt.Println(result)
+func (a *App) Log(toLog string) {
+	fmt.Println("---------")
+	fmt.Println(toLog)
+	fmt.Println("---------")
 }
 
 // Greet returns a greeting for the given name
@@ -130,21 +130,29 @@ func (a *App) Greet(coordinates string) string {
 		instant := forecast.Properties.Timeseries[1].Data.Instant.Details
 
 		weatherData := WeatherData{
-			Time:           forecast.Properties.Timeseries[1].Time.Format(time.RFC3339),
-			Temperature:    instant.AirTemperature,
-			WindSpeed:      instant.WindSpeed,
-			WindDirection:  instant.WindDirection,
-			AirPressure:    instant.AirPressure,
-			AirHumidity:    instant.AirHumidity,
-			WeatherSummary: forecast.Properties.Timeseries[1].Data.Next12Hours.Summary.Value,
-			SymbolCode:     forecast.Properties.Timeseries[1].Data.Next12Hours.Summary.SymbolCode,
+			Time:          forecast.Properties.Timeseries[1].Time.Format(time.RFC3339),
+			Temperature:   instant.AirTemperature,
+			WindSpeed:     instant.WindSpeed,
+			WindDirection: instant.WindDirection,
+			AirPressure:   instant.AirPressure,
+			AirHumidity:   instant.AirHumidity,
+			SymbolCode:    forecast.Properties.Timeseries[1].Data.Next12Hours.Summary.SymbolCode,
 		}
+
+		//		fmt.Println("-------")
+		//		fmt.Println(weatherData.Time)
+		//		fmt.Println(weatherData.Temperature)
+		//		fmt.Println(weatherData.WindSpeed)
+		//		fmt.Println(weatherData.WindDirection)
+		//		fmt.Println(weatherData.AirPressure)
+		//		fmt.Println(weatherData.AirHumidity)
+		//		fmt.Println(weatherData.SymbolCode)
+		//		fmt.Println("-------")
 
 		result, err := json.Marshal(weatherData)
 		if err != nil {
 			return fmt.Sprintf("Error marshaling weather data: %s", err)
 		}
-
 		return string(result)
 	}
 	return fmt.Sprintf("No weather data found!")

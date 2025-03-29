@@ -15,10 +15,9 @@ function App() {
 
     function greet() {
         Greet(coords).then((response) => {
-            Log(response);
             try {
                 const data = JSON.parse(response);
-                Log(data);
+                Log(data.time)
                 setResultText(data);
             }   catch (error) {
                     setResultText("Error parsing weather data!");
