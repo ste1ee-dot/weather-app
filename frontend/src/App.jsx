@@ -8,17 +8,20 @@ function App() {
     const [resultText, setResultText] = useState("Please enter your coords below in format: latitude,longitude 👇");
     const [coords, setCoords] = useState('');
     const [greeted, setGreeted] = useState(false);
+    const [weatherData, setWeatherData] = useState(null);
 
     const updateCoords = (e) => setCoords(e.target.value);
     const updateResultText = (result) => setResultText(result);
+
 
 
     function greet() {
         Greet(coords).then((response) => {
             try {
                 const data = JSON.parse(response);
-                Log(data.time)
-                setResultText(data);
+                setWeatherData(data);
+
+                setResultText("Weather data fetched successfully!");
             }   catch (error) {
                     setResultText("Error parsing weather data!");
             }
@@ -44,7 +47,7 @@ function App() {
                     </div>
                 </div>
             )}
-            {greeted && (
+            {greeted && weatherData && (
                 <div>
                     <div class="main">
                         <div class="left">
@@ -54,7 +57,7 @@ function App() {
                                 <p class="location">location</p>
                             </div>
                             <div class="lower">
-                                <p>{resultText}</p>
+                                <p>{weatherData.time}</p>
                             </div>
                         </div>
                         <div class="right">
