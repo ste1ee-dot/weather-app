@@ -30,7 +30,7 @@ function App() {
     }
 
     const getWeatherIconSrc = (symbolCode) => {
-        const iconPath = `./assets/icons/${symbolCode}.svg`;
+        const iconPath = `/assets/icons/${symbolCode}.svg`;
         return iconPath;
     };
 
@@ -58,6 +58,7 @@ function App() {
                             </div>
                             <div class="lower">
                                 <p>{weatherData.time}</p>
+                                <img src={getWeatherIconSrc(weatherData.symbol_code)} alt={weatherData.symbol_code} className="weather-icon"/>
                             </div>
                         </div>
                         <div class="right">
