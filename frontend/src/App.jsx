@@ -2,6 +2,7 @@ import {useState}from 'react';
 import logo from './assets/images/logo-universal.png';
 import './App.css';
 import {Greet} from "../wailsjs/go/main/App";
+import {Log} from "../wailsjs/go/main/App";
 
 function App() {
     const [resultText, setResultText] = useState("Please enter your coords below in format: latitude,longitude 👇");
@@ -11,10 +12,13 @@ function App() {
     const updateCoords = (e) => setCoords(e.target.value);
     const updateResultText = (result) => setResultText(result);
 
+
     function greet() {
         Greet(coords).then((response) => {
+            Log(response);
             try {
                 const data = JSON.parse(response);
+                Log(data);
                 setResultText(data);
             }   catch (error) {
                     setResultText("Error parsing weather data!");
@@ -51,7 +55,7 @@ function App() {
                                 <p class="location">location</p>
                             </div>
                             <div class="lower">
-                                <img src={getWeatherIconSrc(weatherData.symbol_code)} alt={weatherData.symbol_code} className="weather-icon"/>
+                                <p>{resultText}</p>
                             </div>
                         </div>
                         <div class="right">

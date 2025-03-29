@@ -84,6 +84,10 @@ type WeatherData struct {
 	SymbolCode     string  `json:"symbol_code"`
 }
 
+func (a *App) Log(result string) {
+	fmt.Println(result)
+}
+
 // Greet returns a greeting for the given name
 func (a *App) Greet(coordinates string) string {
 
