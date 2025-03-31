@@ -36,16 +36,28 @@
     margin: 0 0 0 20px;
     padding: 0 8px;
     cursor: pointer;
+    border-radius: 8px;
+    background-image: var(--gradient);
+    color: #fff;
+    font-weight: 600;
+    -webkit-transformation: -webkit-transform 200ms ease;
+    transition: transform 200ms ease;
+    -o-transition: transform 200ms ease;
+    transition: transform 200ms ease;
+    transition: transform 200ms ease, -webkit-transform 200ms ease;
+    -webkit-box-shadow: 0 0 30px -5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 30px -5px rgba(0, 0, 0, 0.25);
 }
 
 .input-box .btn:hover {
-    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-    color: #333333;
+    -webkit-transform: scale(0.95);
+    -ms-transform: scale(0.95);
+    transform: scale(0.95);
 }
 
 .input-box .input {
     border: none;
-    border-radius: 3px;
+    border-radius: 8px;
     outline: none;
     height: 30px;
     line-height: 30px;
@@ -62,34 +74,58 @@
 .input-box .input:focus {
     border: none;
     background-color: rgba(255, 255, 255, 1);
+
 }
 
+.backfill {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #343d4b;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
 
 .main {
     display: flex;
-    height: 100vh;
-    width: 100%;
+    height: 710px;
+    width: 720px;
     background-color: #343d4b;
     font-family: 'Montserrat', sans-serif;
+    border-radius: 25px;
+    box-shadow: 0 0 30px -5px rgba(0, 0, 0, 0.25);
+}
+
+.welcome {
+    height: 710px;
+    width: 720px;
+    background-color: #343d4b;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 25px;
+    box-shadow: 0 0 30px -5px rgba(0, 0, 0, 0.25);
+}
+
+.logo {
+    filter: drop-shadow(0px 0px 30px rgba(0, 0, 0, 0.2));
 }
 
 .left {
-    height: 100vh;
+    height: 100%;
     width: 35%;
     background-image:
         var(--gradient),
         url("https://www.terramater.at/wp-content/uploads/2024/11/March-Morava-02.jpg");
     background-position: center;
     background-size: cover;
-    padding-right: 30px;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
+    padding: 25px;
+    border-radius: 25px;
     box-sizing: border-box;
     box-shadow: 0 0 50px -5px rgba(0, 0, 0, 0.25);
 }
 
 .right {
-    height: 100vh;
+    height: 100%;
     width: 65%;
 }
 
@@ -100,15 +136,14 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 35vh;
+    height: 35%;
 }
 
 .line {
     display: flex;
     justify-content: space-between;
     width: 70%;
-    height: 3vh;
-    margin-top: 15px;
+    margin-top: 5%;
 }
 
 .title {
@@ -126,7 +161,7 @@
 .weekly {
     display: flex;
     width: 100%;
-    height: 35vh;
+    height: 35%;
     justify-content: center;
     align-items: center;
 }
@@ -191,9 +226,32 @@
 .change {
     display: flex;
     width: 100%;
-    height: 30vh;
+    height: 30%;
     justify-content: center;
     align-items: center;
+}
+
+.change-button {
+    width: 40%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-image: var(--gradient);
+    color: #fff;
+    font-weight: 600;
+    -webkit-transformation: -webkit-transform 200ms ease;
+    transition: transform 200ms ease;
+    -o-transition: transform 200ms ease;
+    transition: transform 200ms ease;
+    transition: transform 200ms ease, -webkit-transform 200ms ease;
+    -webkit-box-shadow: 0 0 30px -5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 30px -5px rgba(0, 0, 0, 0.25);
+}
+
+.change-button:hover {
+    -webkit-transform: scale(0.95);
+    -ms-transform: scale(0.95);
+    transform: scale(0.95);
 }
 
 .upper {
@@ -203,7 +261,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
-    height: 50vh;
+    height: 50%;
 }
 
 .lower {
@@ -213,7 +271,7 @@
     justify-content: flex-end;
     align-items: flex-start;
     width: 100%;
-    height: 50vh;
+    height: 50%;
 }
 
 .day {

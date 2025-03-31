@@ -1,11 +1,11 @@
 import {useState}from 'react';
-import logo from './assets/images/logo-universal.png';
+import logo from '/assets/images/weather-logo.png';
 import './App.css';
 import {Greet} from "../wailsjs/go/main/App";
 import {Log} from "../wailsjs/go/main/App";
 
 function App() {
-    const [resultText, setResultText] = useState("Please enter your coords below in format: latitude,longitude 👇");
+    const [resultText, setResultText] = useState("Coords format: latitude, longitute 👇");
     const [coords, setCoords] = useState('');
     const [greeted, setGreeted] = useState(false);
     const [weatherData, setWeatherData] = useState(null);
@@ -15,16 +15,15 @@ function App() {
 
     function greet() {
         Greet(coords).then((response) => {
-            try {
-                const data = JSON.parse(response);
-                setWeatherData(data);
+            const data = JSON.parse(response);
+            setWeatherData(data);
 
-                setResultText("Weather data fetched successfully!");
-            }   catch (error) {
-                    setResultText("Error parsing weather data!");
-            }
         });
         setGreeted(true);
+    }
+
+    function changeLocation() {
+        setGreeted(false);
     }
 
     const getWeatherIconSrc = (symbolCode) => {
@@ -35,18 +34,20 @@ function App() {
     return (
         <div id="App">
             {!greeted && (
-                <div>
-                    <img src={logo} id="logo" alt="logo"/>
-                    <div id="result" className="result">{resultText}</div>
-                    <div id="input" className="input-box">
-                        <input id="name" className="input" onChange={updateCoords}
-                               autoComplete="off" name="input" type="text"/>
-                        <button className="btn" onClick={greet}>Greet</button>
+                <div class="backfill">
+                    <div class="welcome">
+                        <img src={logo} id="logo" alt="logo" class="logo"/>
+                        <div id="result" className="result">{resultText}</div>
+                        <div id="input" className="input-box">
+                            <input id="name" className="input" onChange={updateCoords}
+                                autoComplete="off" name="input" type="text"/>
+                            <button class="btn" onClick={greet}>Greet</button>
+                        </div>
                     </div>
                 </div>
             )}
             {greeted && weatherData && (
-                <div>
+                <div class="backfill">
                     <div class="main">
                         <div class="left">
                             <div class="upper">
@@ -105,7 +106,9 @@ function App() {
                                     </li>
                                 </ul>
                             </div>
-                            <div class="change">change</div>
+                            <div class="change">
+                                <button onClick={changeLocation} class="change-button">Change location</button>
+                            </div>
                         </div>
                     </div>
                 </div>
