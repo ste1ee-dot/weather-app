@@ -5,21 +5,27 @@ import {Greet} from "../wailsjs/go/main/App";
 import {Log} from "../wailsjs/go/main/App";
 
 function App() {
-    const [resultText, setResultText] = useState("Coords format: latitude, longitute 👇");
+    const [resultText, setResultText] = useState("Coords format: latitude, longitude 👇");
     const [coords, setCoords] = useState('');
     const [greeted, setGreeted] = useState(false);
     const [weatherData, setWeatherData] = useState(null);
 
     const updateCoords = (e) => setCoords(e.target.value);
     const updateResultText = (result) => setResultText(result);
+    
+    let coordsAssigned = false;
 
     function greet() {
+        if (!coordsAssigned && !coords) {
+            setResultText("Please provide coords, format: latitude, longitude 👇");
+            return
+        }   
         Greet(coords).then((response) => {
             const data = JSON.parse(response);
             setWeatherData(data);
-
         });
         setGreeted(true);
+        coordsAssigned = true;
     }
 
     function changeLocation() {
@@ -40,7 +46,7 @@ function App() {
                         <div id="result" className="result">{resultText}</div>
                         <div id="input" className="input-box">
                             <input id="name" className="input" onChange={updateCoords}
-                                autoComplete="off" name="input" type="text"/>
+                                autoComplete="off" name="input" type="text" placeholder="latitude, longitude"/>
                             <button class="btn" onClick={greet}>Greet</button>
                         </div>
                     </div>

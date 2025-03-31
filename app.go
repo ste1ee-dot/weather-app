@@ -116,17 +116,20 @@ func (a *App) Log(toLog string) {
 	fmt.Println("---------")
 }
 
-// Greet returns a greeting for the given name
 func (a *App) Greet(coordinates string) string {
 
 	var err error
 
 	coords := strings.Split(coordinates, ",")
 
+	for i := range coords {
+		coords[i] = strings.TrimSpace(coords[i])
+	}
+
 	var myClient = &http.Client{Timeout: 10 * time.Second}
 
 	headers := map[string]string{
-		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0",
+		"User-Agent": "popovicbstefan@gmail.com",
 	}
 
 	url := "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=" + coords[0] + "&lon=" + coords[1]
@@ -179,6 +182,9 @@ func (a *App) Greet(coordinates string) string {
 		fmt.Println("Error parsing date:", err)
 	}
 
+	currentHour := t.Hour()
+	toAddTime := 24 - currentHour
+
 	dayOfWeek := t.Weekday()
 
 	firstDay := dayOfWeek
@@ -193,6 +199,10 @@ func (a *App) Greet(coordinates string) string {
 	fourthDay := fourthTime.Weekday()
 
 	formattedDate := t.Format("02 Jan 2006")
+
+	toAdd := toAddTime + 8
+	toAddSec := toAdd + 24
+	toAddThi := toAddSec + 24
 
 	if len(forecast.Properties.Timeseries) > 0 {
 		instant := forecast.Properties.Timeseries[0].Data.Instant.Details
@@ -212,14 +222,14 @@ func (a *App) Greet(coordinates string) string {
 			Date:               formattedDate,
 			FirstDay:           firstDay.String()[:3],
 			SecondDay:          secondDay.String()[:3],
-			SecondTemp:         forecast.Properties.Timeseries[24].Data.Instant.Details.AirTemperature,
-			SecondSymbol:       forecast.Properties.Timeseries[24].Data.Next1Hours.Summary.SymbolCode,
+			SecondTemp:         forecast.Properties.Timeseries[toAdd].Data.Instant.Details.AirTemperature,
+			SecondSymbol:       forecast.Properties.Timeseries[toAdd].Data.Next6Hours.Summary.SymbolCode,
 			ThirdDay:           thirdDay.String()[:3],
-			ThirdTemp:          forecast.Properties.Timeseries[48].Data.Instant.Details.AirTemperature,
-			ThirdSymbol:        forecast.Properties.Timeseries[48].Data.Next1Hours.Summary.SymbolCode,
+			ThirdTemp:          forecast.Properties.Timeseries[toAddSec].Data.Instant.Details.AirTemperature,
+			ThirdSymbol:        forecast.Properties.Timeseries[toAddSec].Data.Next6Hours.Summary.SymbolCode,
 			FourthDay:          fourthDay.String()[:3],
-			FourthTemp:         forecast.Properties.Timeseries[72].Data.Instant.Details.AirTemperature,
-			FourthSymbol:       forecast.Properties.Timeseries[66].Data.Next6Hours.Summary.SymbolCode,
+			FourthTemp:         forecast.Properties.Timeseries[toAddThi].Data.Instant.Details.AirTemperature,
+			FourthSymbol:       forecast.Properties.Timeseries[toAddThi].Data.Next6Hours.Summary.SymbolCode,
 		}
 
 		result, err := json.Marshal(weatherData)
