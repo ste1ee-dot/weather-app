@@ -17,15 +17,25 @@ function App() {
 
     function greet() {
         if (!coordsAssigned && !coords) {
-            setResultText("Please provide coords, format: latitude, longitude 👇");
-            return
-        }   
+            setResultText("Please provide coords in format below, or a city name 👇");
+            return;
+        }
         Greet(coords).then((response) => {
-            const data = JSON.parse(response);
-            setWeatherData(data);
+            if (response === "ERROR") {
+                setResultText("Invalid input, please use either city name or coords.");
+                return;
+            }
+            try {
+                const data = JSON.parse(response);
+                setWeatherData(data);
+                setGreeted(true);
+                coordsAssigned = true;
+            } catch (error) {
+                setResultText("Invalid input, please use either city name or coords.");
+            }
+        }).catch((error) => {
+            setResultText("Invalid input, please use either city name or coords.");
         });
-        setGreeted(true);
-        coordsAssigned = true;
     }
 
     function changeLocation() {

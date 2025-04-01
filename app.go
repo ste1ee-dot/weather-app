@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 
 	"strings"
@@ -21,10 +22,13 @@ func NewApp() *App {
 	return &App{}
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+}
+
+type LocationRespName struct {
+	Lat string `json:"lat"`
+	Lon string `json:"lon"`
 }
 
 type LocationResponse struct {
@@ -116,33 +120,80 @@ func (a *App) Log(toLog string) {
 	fmt.Println("---------")
 }
 
+func isValidCoordinate(coord string) bool {
+	_, err := strconv.ParseFloat(coord, 64)
+	return err == nil
+}
+
 func (a *App) Greet(coordinates string) string {
 
 	var err error
-
-	coords := strings.Split(coordinates, ",")
-
-	for i := range coords {
-		coords[i] = strings.TrimSpace(coords[i])
-	}
-
+	var coords []string
 	var myClient = &http.Client{Timeout: 10 * time.Second}
 
 	headers := map[string]string{
 		"User-Agent": "popovicbstefan@gmail.com",
 	}
 
-	url := "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=" + coords[0] + "&lon=" + coords[1]
+	if strings.Contains(coordinates, ",") {
+		if isValidCoordinate(coordinates) {
+			return "ERROR"
+		}
+		coords = strings.Split(coordinates, ",")
+
+		for i := range coords {
+			coords[i] = strings.TrimSpace(coords[i])
+		}
+
+		coordsLat, err := strconv.ParseFloat(coords[0], 64)
+		if err != nil {
+			return "ERROR"
+		}
+		coordsLon, err := strconv.ParseFloat(coords[1], 64)
+		if err != nil {
+			return "ERROR"
+		}
+
+		if coordsLat < -90.0 || coordsLat > 90.0 || coordsLon < -180.0 || coordsLon > 180.0 {
+			return "ERROR"
+		}
+
+	} else {
+		coords = nil
+
+		urlLocation := "https://nominatim.openstreetmap.org/search?q=" + coordinates + "&format=jsonv2"
+
+		reqLocation, err := http.NewRequest("GET", urlLocation, nil)
+
+		respLoc, err := myClient.Do(reqLocation)
+		if err != nil {
+			return fmt.Sprintf("Error getting location info: %s", err)
+		}
+
+		bodyLoc, err := io.ReadAll(respLoc.Body)
+		if err != nil {
+			return fmt.Sprintf("Error reading location body: %s", err)
+		}
+		respLoc.Body.Close()
+
+		var locations []LocationRespName
+
+		err = json.Unmarshal([]byte(bodyLoc), &locations)
+		if err != nil {
+			return fmt.Sprintf("Error extracting locations: %s", err)
+		}
+
+		if len(locations) == 0 {
+			return "ERROR"
+		}
+
+		coords = append(coords, locations[0].Lat)
+		coords = append(coords, locations[0].Lon)
+	}
 
 	urlLocation := "https://nominatim.openstreetmap.org/reverse?lat=" + coords[0] + "&lon=" + coords[1] + "&format=jsonv2"
 
 	reqLocation, err := http.NewRequest("GET", urlLocation, nil)
-
-	req, err := http.NewRequest("GET", url, nil)
-
-	for key, value := range headers {
-		req.Header.Set(key, value)
-	}
 
 	respLoc, err := myClient.Do(reqLocation)
 	if err != nil {
@@ -160,6 +211,15 @@ func (a *App) Greet(coordinates string) string {
 	if err != nil {
 		return fmt.Sprintf("Error parsing location json: %s", err)
 	}
+
+	url := "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=" + coords[0] + "&lon=" + coords[1]
+
+	req, err := http.NewRequest("GET", url, nil)
+
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
 	resp, err := myClient.Do(req)
 	if err != nil {
 		return fmt.Sprintf("Error getting weather info: %s", err)
@@ -204,6 +264,13 @@ func (a *App) Greet(coordinates string) string {
 	toAddSec := toAdd + 24
 	toAddThi := toAddSec + 24
 
+	var fourthDaySymbol string
+	if forecast.Properties.Timeseries[toAddThi].Data.Next6Hours.Summary.SymbolCode == "" {
+		fourthDaySymbol = forecast.Properties.Timeseries[toAddSec].Data.Next6Hours.Summary.SymbolCode
+	} else {
+		fourthDaySymbol = forecast.Properties.Timeseries[toAddThi].Data.Next6Hours.Summary.SymbolCode
+	}
+
 	if len(forecast.Properties.Timeseries) > 0 {
 		instant := forecast.Properties.Timeseries[0].Data.Instant.Details
 
@@ -229,7 +296,7 @@ func (a *App) Greet(coordinates string) string {
 			ThirdSymbol:        forecast.Properties.Timeseries[toAddSec].Data.Next6Hours.Summary.SymbolCode,
 			FourthDay:          fourthDay.String()[:3],
 			FourthTemp:         forecast.Properties.Timeseries[toAddThi].Data.Instant.Details.AirTemperature,
-			FourthSymbol:       forecast.Properties.Timeseries[toAddThi].Data.Next6Hours.Summary.SymbolCode,
+			FourthSymbol:       fourthDaySymbol,
 		}
 
 		result, err := json.Marshal(weatherData)
