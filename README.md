@@ -16,6 +16,9 @@ try installing for you distro:
 * [DEB](https://pkgs.org/download/libjavascriptcoregtk-4.0-18)
 * [RPM](https://pkgs.org/download/libjavascriptcoregtk-4.0.so.18()(64bit))
 
+You may also need to install webkit2gtk4.0:
+* [DEB](https://pkgs.org/download/libwebkit2gtk-4.0-37)
+* [RPM](https://pkgs.org/download/pkgconfig(webkit2gtk-4.0))
 
 ## Mentions
 
