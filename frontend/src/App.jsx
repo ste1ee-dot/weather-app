@@ -39,6 +39,7 @@ function App() {
     }
 
     function changeLocation() {
+        setResultText("Please provide coords in format below, or a city name without spaces👇");
         setGreeted(false);
     }
 
