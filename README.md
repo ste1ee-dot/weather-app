@@ -12,4 +12,4 @@ chmod a+x ./weather-app-linux-...
 
 ## Mentions
 
-This project was built using [Wails](https://wails.io/)
+This project was built using [Wails](https://wails.io/).
