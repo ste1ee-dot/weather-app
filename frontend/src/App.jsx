@@ -5,7 +5,7 @@ import {Greet} from "../wailsjs/go/main/App";
 import {Log} from "../wailsjs/go/main/App";
 
 function App() {
-    const [resultText, setResultText] = useState("Coords format: latitude, longitude 👇");
+    const [resultText, setResultText] = useState("Please provide coords in format below, or a city name without spaces 👇");
     const [coords, setCoords] = useState('');
     const [greeted, setGreeted] = useState(false);
     const [weatherData, setWeatherData] = useState(null);
@@ -17,7 +17,7 @@ function App() {
 
     function greet() {
         if (!coordsAssigned && !coords) {
-            setResultText("Please provide coords in format below, or a city name 👇");
+            setResultText("Please provide coords in format below, or a city name without spaces👇");
             return;
         }
         Greet(coords).then((response) => {
