@@ -8,6 +8,14 @@ This project was made on purpose of learning [Go](https://go.dev/). It's probabl
 ```bash
 chmod a+x ./weather-app-linux-...
 ```
+If you have any errors saying:
+```
+error while loading shared libraries: libjavascriptcoregtk-4.0.so.18: cannot open shared object file: No such file or directory
+```
+try installing for you distro:
+* [DEB](https://pkgs.org/download/libjavascriptcoregtk-4.0-18)
+* [RPM](https://pkgs.org/download/libjavascriptcoregtk-4.0.so.18()(64bit))
+
 
 ## Mentions
 
