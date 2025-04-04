@@ -1,4 +1,4 @@
-# CLI Web Scraper
+# Weather app
 
 This project was made on purpose of learning [Go](https://go.dev/). It's probably really unoptimized, any criticizm is welcome.
 
